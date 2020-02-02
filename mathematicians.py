@@ -34,3 +34,5 @@ def is_good_response(resp):
     # This funtion just prints them, but you can make it do anything.
     
     print(e)
+    
+   
