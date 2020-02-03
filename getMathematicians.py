@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from mathematicians import simple_get
+from mathematicians import log_error
 
 
 
@@ -40,9 +41,10 @@ def get_hits_on_name(name):
   of this api endpoint to automatically go through and scrape the wikipedia names for statistics of each the scientists.
   """
   url = 'https://xtools.wmflabs.org/api/page/prose/en.wikipedia.org/'
-  
+
   # This is where we will format to automatically insert the names at the end of the api endpoint
-  response = simple_get(url_root.format(name))
+  # This is currently not working correctly because i need to format the name for enpoint to follow this format 'albert_einstein'
+  response = simple_get(url.format(name))
   
   if response is not None:
     html = BeautifulSoup(response, 'html.parser')
@@ -51,7 +53,7 @@ def get_hits_on_name(name):
                 if a ['href'].find('latest-60') > -1]
     
     if len(hit_link) > 0:
-      # stip commas
+      # strip commas
       link_text = hit_link[0].text.replace(',','')
       try:
         # Convert to integer
@@ -59,7 +61,7 @@ def get_hits_on_name(name):
       except:
         log_error("couldn't parse{} as an `int `".format(link_text))
         
-  log_error('No pageviews found for{}'.format(name))
+  log_error('No pageviews found for {}'.format(name))
   return None
 
 if __name__ == '__main__':
@@ -76,6 +78,7 @@ if __name__ == '__main__':
       hits = get_hits_on_name(name)
       if hits is None:
         hits = -1
+    except:
       results.append((-1, name))
       log_error('error encountered while processing'
                 '{}, skipping'.format(name))
@@ -93,7 +96,7 @@ if __name__ == '__main__':
     
   print('\nThe most popular mathematicians are: \n')
   for (mark, mathematician) in top_marks:
-    print('{} with {} pageviews'.format(mathematician, mark))
+    print('{} wit h {} pageviews'.format(mathematician, mark))
     
   no_results = len([res for res in results if res[0] == -1])
   print ('\nBut we did not find results for ' 
